@@ -1,0 +1,132 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
+
+android {
+    compileSdk 31
+
+    def TRUE = "true"
+    def FALSE = "false"
+    def IS_LOGS_ENABLED = "IS_LOGS_ENABLED"
+    def CAN_USE_MOCK = "CAN_USE_MOCK"
+    def APP_NAME = "app_name"
+
+    defaultConfig {
+        applicationId "com.example.fakeapp"
+        minSdk 23
+        targetSdk 31
+        versionCode 1
+        versionName "1.0"
+
+        buildConfigField "String", 'CLEAN_VERSION_NAME', '"' + versionName + '"'
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "boolean", CAN_USE_MOCK, FALSE
+            buildConfigField "boolean", IS_LOGS_ENABLED, FALSE
+        }
+
+        debug {
+            minifyEnabled false
+            buildConfigField "boolean", CAN_USE_MOCK, TRUE
+            buildConfigField "boolean", IS_LOGS_ENABLED, TRUE
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    viewBinding {
+        enabled = true
+    }
+
+    def BASE_URL = "BASE_URL"
+    def BASE_URL_DEV = "\"https://fakerapi.it/api/v1/\""
+    def BASE_URL_PROD = "\"https://fakerapi.it/api/v1/\""
+
+    flavorDimensions "fake_app"
+
+    productFlavors {
+        dbDev {
+            dimension "fake_app"
+            resValue "string", APP_NAME, "FakeApp"
+            applicationId "com.example.fakeapp.dev"
+            buildConfigField "String", BASE_URL, BASE_URL_DEV
+        }
+        dbProd {
+            dimension "fake_app"
+            resValue "string", APP_NAME, "FakeApp"
+            applicationId "com.example.fakeapp"
+            buildConfigField "String", BASE_URL, BASE_URL_PROD
+        }
+    }
+
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+
+    implementation "androidx.multidex:multidex:2.0.1"
+
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    kapt('com.github.bumptech.glide:compiler:4.12.0')
+
+    // Room
+    def room_version = '2.4.2'
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-rxjava3:$room_version"
+    kapt("androidx.room:room-compiler:$room_version")
+
+    // Retrofit
+    def retrofit_version = '2.9.0'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-simplexml:$retrofit_version"
+    implementation "com.google.code.gson:gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava3:$retrofit_version"
+
+    // Okhttp3
+    def okhttp_version = '4.9.1'
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+
+    // Koin
+    implementation "io.insert-koin:koin-core:$koin_version"
+    implementation "io.insert-koin:koin-android:$koin_version"
+
+    def lifecycle_version = '2.4.1'
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    // for DefaultLifecycleObserver
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+
+    def navigation_version = "2.4.2"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
+
+    // RxJava 3
+    implementation "io.reactivex.rxjava3:rxjava:3.1.2"
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+
+    debugImplementation "com.github.chuckerteam.chucker:library:3.5.2"
+    releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.5.2"
+}
